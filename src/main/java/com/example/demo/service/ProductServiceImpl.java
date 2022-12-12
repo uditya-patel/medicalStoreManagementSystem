@@ -1,0 +1,140 @@
+package com.example.demo.service;
+
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.exceptionhandler.BillNotFoundException;
+import com.example.demo.exceptionhandler.ProductNotFoundException;
+import com.example.demo.model.Billing;
+import com.example.demo.model.Product;
+import com.example.demo.repository.BillingRepository;
+import com.example.demo.repository.ProductRepository;
+
+@Service
+public class ProductServiceImpl implements ProductService{
+	
+	@Autowired
+	private ProductRepository productRepository;
+	
+	@Autowired
+	private BillingRepository billRepository;
+
+	@Override
+	public Product addProduct(Long billId, Product productRequest) throws ProductNotFoundException, BillNotFoundException {
+		
+			Optional<Billing> b = billRepository.findById(billId);
+			if(b.isPresent()) {
+				Billing bill = b.get();
+				Integer pId = productRequest.getProductId();
+				
+				if(pId!=null) {
+					Optional<Product> _product = productRepository.findById(pId);
+					if(_product.isPresent()) {
+						bill.addProduct(_product.get());
+						billRepository.save(bill);
+						return _product.get();
+						
+					}
+					else {
+						throw new ProductNotFoundException("Product not found with productId " + pId);
+					}
+					
+				}
+				bill.addProduct(productRequest);
+				Product product = productRepository.save(productRequest);
+				return product;
+				
+			}
+			else {
+				throw new BillNotFoundException("Bill not found with billId " + billId);
+			}
+//			return productRepository.save(productRequest);
+			
+		
+		
+	}
+
+	@Override
+	public Product getProductById(Integer productId) throws ProductNotFoundException {
+		Optional<Product> product =  productRepository.findById(productId);
+		if(product.isPresent()) {
+			return product.get();
+		}
+		else {
+			throw new ProductNotFoundException("Product not found with productId " + productId);
+		}
+	}
+
+	@Override
+	public Product updateProduct(Integer productId, Product product) throws ProductNotFoundException {
+		Optional<Product> _product = productRepository.findById(productId);
+		if(_product.isPresent()) {
+			_product.get().setProductName(product.getProductName());
+			_product.get().setProductDescription(product.getProductDescription());
+			_product.get().setProductCompany(product.getProductCompany());
+			_product.get().setProductPrice(product.getProductPrice());
+			_product.get().setProductQuantity(product.getProductQuantity());
+			_product.get().setProductBatchNo(product.getProductBatchNo());
+			_product.get().setProductExpiryDate(product.getProductExpiryDate());
+			return productRepository.save(_product.get());
+		}
+		else {
+			throw new ProductNotFoundException("Product not found with productId " + productId);
+		}
+	}
+
+	@Override
+	public void deleteProduct(Integer productId) throws ProductNotFoundException {
+		Optional<Product> product = productRepository.findById(productId);
+		if(product.isPresent()) {
+			productRepository.deleteById(productId);
+		}
+		else {
+			throw new ProductNotFoundException("Product not found with productId " + productId);
+		}
+		
+		
+	}
+
+	@Override
+	public void deleteProductFromBill(Long billId, Integer productId) throws BillNotFoundException {
+		Optional<Billing> bill = billRepository.findById(billId);
+		
+		if(bill.isPresent()) {
+			bill.get().removeProduct(productId);
+			billRepository.save(bill.get());
+		}
+		else {
+			throw new BillNotFoundException("Bill not found with billId " + billId);
+		}
+	}
+
+	@Override
+	public List<Product> getAllProducts() {
+		return productRepository.findAll();
+	}
+
+	@Override
+	public Product addProduct(Product product) {
+		return productRepository.save(product);
+	}
+
+	/*@override
+	public List<Product> getAllProductsByBillId(Integer billId) throws BillNotFoundException {
+		if(!billRepository.existsById(billId)) {
+			throw new BillNotFoundException("Bill not found with billId " + billId);
+		}
+		
+		List<Product> products = productRepository.findProductsByBillId(billId);
+		return products;
+	}
+	*/
+
+	
+	
+
+}
