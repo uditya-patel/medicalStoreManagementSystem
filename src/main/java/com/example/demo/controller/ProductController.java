@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.exceptionhandler.BillNotFoundException;
 import com.example.demo.exceptionhandler.ProductNotFoundException;
+import com.example.demo.exceptionhandler.StockUnavailableException;
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
 
@@ -26,10 +28,10 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
-	@PostMapping("/addProductToBill/{billId}")
-	public ResponseEntity<Product> addProduct(@PathVariable(value = "billId") Long billId,
-			@RequestBody Product product) throws ProductNotFoundException, BillNotFoundException {
-		Product _product = productService.addProduct(billId, product);
+	@PostMapping("/addProductToBill")
+	public ResponseEntity<Product> addProduct(@RequestParam("billId") Long billId,
+			@RequestParam("productId") Integer productId, @RequestParam("productQuantity") Integer productQuantity) throws StockUnavailableException, ProductNotFoundException, BillNotFoundException  {
+		Product _product = productService.addProduct(billId, productId, productQuantity);
 
 		return new ResponseEntity<>(_product, HttpStatus.CREATED);
 	}
@@ -87,6 +89,7 @@ public class ProductController {
 	 * return new ResponseEntity<>(products, HttpStatus.OK);
 	 * 
 	 * }
+	 *
 	 */
 
 }

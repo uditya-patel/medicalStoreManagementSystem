@@ -6,15 +6,18 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.exceptionhandler.BillNotFoundException;
 import com.example.demo.exceptionhandler.ProductNotFoundException;
+import com.example.demo.exceptionhandler.StockUnavailableException;
 import com.example.demo.model.Billing;
 import com.example.demo.model.Product;
 import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.ProductRepository;
 
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService{
 	
 	@Autowired
@@ -24,9 +27,46 @@ public class ProductServiceImpl implements ProductService{
 	private BillingRepository billRepository;
 
 	@Override
-	public Product addProduct(Long billId, Product productRequest) throws ProductNotFoundException, BillNotFoundException {
+	public Product addProduct(Long billId, Integer productId, Integer productQuantity) throws StockUnavailableException, ProductNotFoundException, BillNotFoundException{
 		
-			Optional<Billing> b = billRepository.findById(billId);
+		Optional<Billing> b = billRepository.findById(billId);
+		if(b.isPresent()) {
+			Billing bill = b.get();
+			if(productId!=null) {
+				
+				Optional<Product> _product = productRepository.findById(productId);
+				if(_product.isPresent()) {
+					if(productQuantity<=_product.get().getProductQuantity()) {
+						long totalAmt = bill.getTotalAmount();
+						totalAmt+= _product.get().getProductPrice()*productQuantity;
+						bill.setTotalAmount(totalAmt);
+						_product.get().setProductQuantity(_product.get().getProductQuantity() - productQuantity);
+						bill.addProduct(_product.get());
+						billRepository.save(bill);
+						return _product.get();
+						
+					}
+					else {
+						throw new StockUnavailableException("Sorry! Product is not available in stock");
+					}
+				}
+				else {
+					throw new ProductNotFoundException("Product not found with productId " + productId + "in our stock");
+				}
+				
+			}
+			else {
+				throw new ProductNotFoundException("Product not found, please enter a valid product id");
+			}
+		}
+		else {
+			throw new BillNotFoundException("Bill not found with billId " + billId);
+		}
+		
+		
+		
+		
+			/*Optional<Billing> b = billRepository.findById(billId);
 			if(b.isPresent()) {
 				Billing bill = b.get();
 				Integer pId = productRequest.getProductId();
@@ -53,6 +93,8 @@ public class ProductServiceImpl implements ProductService{
 				throw new BillNotFoundException("Bill not found with billId " + billId);
 			}
 //			return productRepository.save(productRequest);
+ 
+ */
 			
 		
 		

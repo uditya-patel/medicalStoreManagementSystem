@@ -5,12 +5,13 @@ import java.util.List;
 
 import com.example.demo.exceptionhandler.BillNotFoundException;
 import com.example.demo.exceptionhandler.ProductNotFoundException;
+import com.example.demo.exceptionhandler.StockUnavailableException;
 import com.example.demo.model.Product;
 
 public interface ProductService {
 	
 
-	public Product addProduct(Long billId, Product product) throws ProductNotFoundException, BillNotFoundException;
+	public Product addProduct(Long billId, Integer productId, Integer productQuantity) throws StockUnavailableException, ProductNotFoundException, BillNotFoundException;
 
 	public Product getProductById(Integer productId) throws ProductNotFoundException;
 

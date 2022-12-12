@@ -18,5 +18,10 @@ public class ExceptionHandlerAdvice {
 	public ResponseEntity<String> productNotFound(ProductNotFoundException pnfe) {
 		return new ResponseEntity<>(pnfe.getMessage(), HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(StockUnavailableException.class)
+	public ResponseEntity<String> StockUnavailable(StockUnavailableException sue) {
+		return new ResponseEntity<>(sue.getMessage(), HttpStatus.NOT_FOUND);
+	}
 
 }
