@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.model.Customer;
-import com.example.demo.service.CustomerServiceImpl;
-
-import jakarta.validation.Valid;
+import com.example.demo.service.CustomerService;
 
 @CrossOrigin(origins="http://localhost:4200")
 @RestController
@@ -29,12 +28,12 @@ import jakarta.validation.Valid;
 public class CustomerController {
 	
 	@Autowired
-	CustomerServiceImpl cusService;
+	CustomerService cusService;
 
-	@PostMapping("/signup")
-	public ResponseEntity<String> addCustomerDetails(@Valid @RequestBody Customer customer){
-	    String response=cusService.customerMembership(customer);
-		return new ResponseEntity<String>(response,HttpStatus.CREATED);
+	@PostMapping("/sign up")
+	public ResponseEntity<String> addCustomerDetails(@Validated @RequestBody Customer customer){
+	    String response = cusService.addCustomerDetails(customer);
+		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/View Profile")

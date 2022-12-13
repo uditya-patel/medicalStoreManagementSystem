@@ -8,11 +8,11 @@ import com.example.demo.model.Billing;
 
 public interface BillingService {
 	
-	String registration(Billing billing);
+//	String registration(Billing billing);
 	
 	String billCancel(Long id);
 	
-	Billing createBill(Billing bill);
+//	Billing createBill(Billing bill);
 
 	Billing getBillById(Long billId) throws BillNotFoundException;
 

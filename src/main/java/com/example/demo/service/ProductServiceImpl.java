@@ -64,37 +64,7 @@ public class ProductServiceImpl implements ProductService{
 		}
 		
 		
-		
-		
-			/*Optional<Billing> b = billRepository.findById(billId);
-			if(b.isPresent()) {
-				Billing bill = b.get();
-				Integer pId = productRequest.getProductId();
-				
-				if(pId!=null) {
-					Optional<Product> _product = productRepository.findById(pId);
-					if(_product.isPresent()) {
-						bill.addProduct(_product.get());
-						billRepository.save(bill);
-						return _product.get();
-						
-					}
-					else {
-						throw new ProductNotFoundException("Product not found with productId " + pId);
-					}
-					
-				}
-				bill.addProduct(productRequest);
-				Product product = productRepository.save(productRequest);
-				return product;
-				
-			}
-			else {
-				throw new BillNotFoundException("Bill not found with billId " + billId);
-			}
-//			return productRepository.save(productRequest);
- 
- */
+
 			
 		
 		

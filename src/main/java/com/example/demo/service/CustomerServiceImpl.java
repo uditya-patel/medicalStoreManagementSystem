@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.exceptionhandler.CustomerIdInvalidException;
-import com.example.demo.exceptionhandler.KeyViolationException;
 import com.example.demo.exceptionhandler.PasswordNotMatchException;
 import com.example.demo.exceptionhandler.ProfileNotFoundException;
 import com.example.demo.exceptionhandler.WrongPasswordException;
@@ -19,13 +18,18 @@ import com.example.demo.repository.CustomerRepository;
 
 @Service
 @Transactional
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
-	CustomerRepository cusRepo;
-
-	public String customerMembership(Customer customer) {
-
+	private CustomerRepository cusRepo;
+	
+	@Override
+	public String addCustomerDetails(Customer customer) {
+		
+		cusRepo.save(customer);
+		
+		return "profile created successfully";
+		/*
 		Customer customer1 = cusRepo.findByCustomerName(customer.getCustomerName());
 
 		if (customer1 != null) {
@@ -34,9 +38,11 @@ public class CustomerServiceImpl implements CustomerService{
 			cusRepo.save(customer);
 			return ("profile created successfully");
 		}
+		*/
 
 	}
-
+	
+	@Override
 	public Optional<Customer> customerView(long customerId) {
 		try {
 			return Optional.of(cusRepo.findByCustomerId(customerId));
@@ -45,20 +51,28 @@ public class CustomerServiceImpl implements CustomerService{
 		}
 
 	}
-
+	@Override
 	public String modify(Customer customer) {
 
-		Customer customer1 = cusRepo.findByCustomerId(customer.getCustomerId());
+//		Customer customer1 = cusRepo.findByCustomerId(customer.getCustomerId());
+		Optional<Customer> _customer = cusRepo.findById(customer.getCustomerId());
 
-		if (customer1 != null) {
-			cusRepo.save(customer);
+		if (_customer.isPresent()) {
+			_customer.get().setCustomerName(customer.getCustomerName());
+			_customer.get().setCustomerAge(customer.getCustomerAge());
+			_customer.get().setCustomerMobilenumber(customer.getCustomerMobilenumber());
+			_customer.get().setCustomerEmail(customer.getCustomerEmail());
+			_customer.get().setCustomerGender(customer.getCustomerGender());
+			_customer.get().setCustomerPassword(customer.getCustomerPassword());
+			_customer.get().setCustomerConfirmPassword(customer.getCustomerConfirmPassword());
 			return "updated successfully";
-		} else {
+		} 
+		else {
 			throw new ProfileNotFoundException("NO SUCH CUSTOMERID WAS REGISTERED");
 		}
 	}
 	
-	
+	@Override
 	public String customerDelete(Long id) {
 
 		Customer customer = (cusRepo.findByCustomerId(id));
@@ -71,11 +85,12 @@ public class CustomerServiceImpl implements CustomerService{
 		}
 
 	}
-	
+	@Override
 	public List<Customer> getAllCustomers(){
 		return cusRepo.findAll();
 	}
 	
+	@Override
 	public String loginPage(LoginRequest login) {
 
 		Customer customer = cusRepo.findByCustomerName(login.getCustomerName());
@@ -93,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService{
 
 	}
 	
-	
+	@Override
 	public String resetPassword(String username,String password,String resetPassword) {
 		Customer customer=cusRepo.findByCustomerName(username);
 		if(customer!=null) {

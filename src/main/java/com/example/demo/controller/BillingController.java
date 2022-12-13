@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +18,6 @@ import com.example.demo.exceptionhandler.BillNotFoundException;
 import com.example.demo.model.Billing;
 import com.example.demo.service.BillingService;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/billing")
 public class BillingController {
@@ -28,11 +25,13 @@ public class BillingController {
 	@Autowired
 	private BillingService billService;
 	
+	/*
 	@PostMapping("/registration")
 	public ResponseEntity<String> addBillDetails(@Valid @RequestBody Billing billing){
 	    String response=billService.registration(billing);
 		return new ResponseEntity<String>(response,HttpStatus.CREATED);
 	}
+	*/
 	
 	@DeleteMapping("/deleteBill")
 	public ResponseEntity<String> deleteBill(@RequestParam("id") Long id) {
@@ -43,14 +42,19 @@ public class BillingController {
 	
 //	Uditya functionality
 	
+//	public ResponseEntity<Billing> createBill(@RequestParam("productId") Integer productId, @RequestParam("productQuantity") Integer productQuantity,@RequestParam("customerName") String customerName) {
+		
+//	}
 	
 	
+	/*
 	@PostMapping("/createBill")
 	public ResponseEntity<Billing> createBill(@RequestBody Billing bill) {
 		Billing _bill = (Billing) billService.createBill(bill);
 		return new ResponseEntity<>(_bill, HttpStatus.CREATED);
 		
 	}
+	*/
 	
 	@GetMapping("/getBillById/{id}")
 	public ResponseEntity<Billing> getBillById(@PathVariable("id") Long billId) throws BillNotFoundException {

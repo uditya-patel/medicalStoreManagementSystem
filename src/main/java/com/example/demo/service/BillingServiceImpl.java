@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.exceptionhandler.BillNotFoundException;
 import com.example.demo.exceptionhandler.CustomerIdInvalidException;
-import com.example.demo.exceptionhandler.KeyViolationException;
 import com.example.demo.model.Billing;
-import com.example.demo.model.Customer;
 import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.CustomerRepository;
 
@@ -24,7 +22,8 @@ public class BillingServiceImpl implements BillingService{
 	
 	@Autowired
 	CustomerRepository customerRepository;
-
+	
+	/*
 	@Override
 	public String registration(Billing billing) {
 		Customer customer1 = customerRepository.findByCustomerId(billing.getCustomer().getCustomerId());
@@ -38,6 +37,7 @@ public class BillingServiceImpl implements BillingService{
 			
 		}
 	}
+	*/
 	
 	@Override
 	public String billCancel(Long id) {
@@ -53,12 +53,13 @@ public class BillingServiceImpl implements BillingService{
 
 	}
 	
-
+	/*
 	@Override
 	public Billing createBill(Billing bill) {
 		return billRepository.save(bill);
 
 	}
+	*/
 
 	@Override
 	public Billing getBillById(Long billId) throws BillNotFoundException {
